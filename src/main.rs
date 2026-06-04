@@ -74,7 +74,7 @@ async fn main() {
                 .unwrap();
 
             let response_result = client
-                .get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
+                .get(format!("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies={}",new_currency))
                 .send()
                 .await;
 
@@ -88,7 +88,7 @@ async fn main() {
                         if let Ok(json_data) = serde_json::from_str::<serde_json::Value>(&raw_text) {
                             
                             // 4. Safely extract the floating point price using index mapping
-                            if let Some(price) = json_data["bitcoin"]["usd"].as_f64() {
+                            if let Some(price) = json_data["bitcoin"][&new_currency].as_f64() {
                                 println!("🎉 Connection Successful!");
                                 println!("💰 Live Bitcoin Price: ${:.2} USD", price);
                             } else {
