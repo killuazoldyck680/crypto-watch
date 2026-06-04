@@ -4,6 +4,7 @@ use clap:: {Parser,Subcommand};
 use std::fs::File;
 use std::io::Read;
 use std::time::Duration;
+use anyhow::{Context, Result};
 
 
 
@@ -34,7 +35,7 @@ enum Commands {
 
 #[tokio::main]
 
-async fn main() {
+async fn main() -> Result<()> {
    let cli = CLI::parse(); 
 
    let mut currency = cli.currency.clone();
@@ -71,7 +72,7 @@ async fn main() {
             let client = reqwest::Client::builder()
                 .user_agent("CryptoWatchCLI/1.0")
                 .build()
-                .unwrap();
+                .context("Failed to initialize the HTTP network client connection engine")?;
 
             let target_currency = new_currency.to_lowercase();
 
@@ -120,5 +121,5 @@ async fn main() {
    }
    
 
-
+   Ok(())
 }
