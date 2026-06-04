@@ -9,6 +9,7 @@ use anyhow::{Context, Result};
 
 
 
+
 #[derive(Serialize,Deserialize,Debug)]
 struct Config {
     default_currency : String
@@ -30,7 +31,10 @@ struct CLI {
 
 #[derive(Subcommand,Debug)]
 enum Commands {
-    Price,
+    Price {
+        #[arg(short,long)]
+        save: bool
+    }
 }
 
 #[tokio::main]
@@ -61,7 +65,7 @@ async fn main() -> Result<()> {
    
 
    match &cli.subcommand {
-    Some(Commands::Price) => {
+    Some(Commands::Price {save}) => {
             println!("Price subcommand detected! Ready to fetch data...");
             
             let pb = ProgressBar::new_spinner();
@@ -97,6 +101,20 @@ async fn main() -> Result<()> {
                             if let Some(price) = json_data["bitcoin"][&target_currency].as_f64() {
                                 println!("🎉 Connection Successful!");
                                 println!("💰 Live Bitcoin Price: {:.2} {}", price, target_currency.to_uppercase());
+
+                                if *save {
+                                    use std::fs::OpenOptions;
+                                    use std::io::Write;
+
+                                    let mut file = OpenOptions::new().write(true).append(true).create(true).open("price_history.txt").context("Failed to open or create the price_history.txt file")?;
+
+                                    let log_entry = format!("Live Bitcoin Price: {:.2} {}\n", price, target_currency.to_uppercase());
+
+                                    file.write_all(log_entry.as_bytes()).context("Failed to write data log packet into file buffer")?;
+
+                                    println!("💾 Saved price snapshot safely into price_history.txt!");
+                                
+                                }
                             } else {
                                 println!("❌ CoinGecko changed its layout. Raw output received:\n{}", raw_text);
                             }
