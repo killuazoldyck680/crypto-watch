@@ -91,3 +91,6 @@ let client = reqwest::Client::builder()
 .user_agent("CryptoWatchCLI/1.0")
 .build()
 .context("Failed to initialize the HTTP network client connection engine")?;
+
+
+jj
