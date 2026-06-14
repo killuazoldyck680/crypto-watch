@@ -92,5 +92,3 @@ let client = reqwest::Client::builder()
 .build()
 .context("Failed to initialize the HTTP network client connection engine")?;
 
-
-jj
