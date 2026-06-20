@@ -90,5 +90,5 @@ Contextual Bubbling: Low-level networking or system I/O errors are intercepted a
 let client = reqwest::Client::builder()
 .user_agent("CryptoWatchCLI/1.0")
 .build()
-.context("Failed to initialize the HTTP network client connection engine")?;
+.context("Failed to initialize the HTTP network client connection engine")?; ll
 
